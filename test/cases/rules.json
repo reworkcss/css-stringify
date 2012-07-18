@@ -1,0 +1,24 @@
+{
+  "stylesheet": {
+    "rules": [
+      {
+        "selector": "tobi",
+        "declarations": [
+          {
+            "property": "name",
+            "value": "'tobi'"
+          }
+        ]
+      },
+      {
+        "selector": "loki",
+        "declarations": [
+          {
+            "property": "name",
+            "value": "'loki'"
+          }
+        ]
+      }
+    ]
+  }
+}
