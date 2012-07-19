@@ -9,145 +9,137 @@
  */
 
 module.exports = function(node, options){
-  options = options || {};
+  return new Compiler(options).compile(node);
   return options.compress
     ? node.stylesheet.rules.map(visit(options)).join('')
     : node.stylesheet.rules.map(visit(options)).join('\n\n');
 };
 
 /**
- * Visit rule nodes.
+ * Initialize a new `Compiler`.
  */
 
-function visit(options) {
-  var _rule = rule(options);
-  var _keyframes = keyframes(options);
-  var _media = media(options);
-  return function(node){
-    if (node.keyframes) return _keyframes(node);
-    if (node.media) return _media(node);
-    if (node.import) return atimport(node);
-    return _rule(node);
-  }
+function Compiler(options) {
+  options = options || {};
+  this.compress = options.compress;
 }
 
 /**
- * Compile import.
+ * Compile `node`.
  */
 
-function atimport(rule) {
-  return '@import ' + rule.import + ';';
-}
+Compiler.prototype.compile = function(node){
+  return node.stylesheet.rules.map(this.visit.bind(this))
+    .join(this.compress ? '' : '\n\n');
+};
 
 /**
- * Compile media.
+ * Visit `node`.
  */
 
-function media(options) {
-  return function(media){
-    return '@media '
-      + media.media
-      + ' {\n'
-      + media.rules.map(indent(visit(options))).join('\n\n')
-      + '\n}';
-  }
-}
+Compiler.prototype.visit = function(node){
+  if (node.keyframes) return this.keyframes(node);
+  if (node.media) return this.media(node);
+  if (node.import) return this.import(node);
+  return this.rule(node);
+};
 
 /**
- * Compile keyframes.
+ * Visit import node.
  */
 
-function keyframes(options) {
-  if (options.compress) {
-    return function(keyframes){
-      return '@'
-      + (keyframes.vendor || '')
-      + 'keyframes '
-      + keyframes.name
-      + '{'
-      + keyframes.keyframes.map(keyframe(options)).join('')
-      + '}';
-    }
-  }
+Compiler.prototype.import = function(node){
+  return '@import ' + node.import + ';';
+};
 
-  return function(keyframes){
-    return '@'
-    + (keyframes.vendor || '')
-    + 'keyframes '
-    + keyframes.name
+/**
+ * Visit media node.
+ */
+
+Compiler.prototype.media = function(node){
+  var self = this;
+  return '@media '
+    + node.media
     + ' {\n'
-    + keyframes.keyframes.map(keyframe(options)).join('\n')
+    + node.rules.map(function(node){
+      return '  ' + self.visit(node);
+    }).join('\n\n')
+    + '\n}';
+};
+
+/**
+ * Visit keyframes node.
+ */
+
+Compiler.prototype.keyframes = function(node){
+  if (this.compress) {
+    return '@'
+      + (node.vendor || '')
+      + 'keyframes '
+      + node.name
+      + '{'
+      + node.keyframes.map(this.keyframe.bind(this)).join('')
+      + '}';
+  }
+
+  return '@'
+    + (node.vendor || '')
+    + 'keyframes '
+    + node.name
+    + ' {\n'
+    + node.keyframes.map(this.keyframe.bind(this)).join('\n')
     + '}';
-  }
-}
+};
 
 /**
- * Compile keyframe.
+ * Visit keyframe node.
  */
 
-function keyframe(options) {
-  if (options.compress) {
-    return function(keyframe){
-      return keyframe.values.join(',')
-        + '{'
-        + keyframe.declarations.map(declaration(options)).join(';')
-        + '}'
-    }
+Compiler.prototype.keyframe = function(node){
+  var self = this;
+
+  if (this.compress) {
+    return node.values.join(',')
+      + '{'
+      + node.declarations.map(this.declaration.bind(this)).join(';')
+      + '}'
   }
 
-  return function(keyframe){
-    return '  '
-      + keyframe.values.join(', ')
-      + ' {\n'
-      + keyframe.declarations.map(indent(declaration(options))).join(';')
-      + '\n  }\n'
-  }
-}
+  return '  '
+    + node.values.join(', ')
+    + ' {\n'
+    + node.declarations.map(function(node){
+      return '  ' + self.declaration(node);
+    }).join(';')
+    + '\n  }\n'
+};
 
 /**
- * Compile rule.
+ * Visit rule node.
  */
 
-function rule(options) {
-  if (options.compress) {
-    return function(rule){
-      return rule.selector
-        + '{'
-        + rule.declarations.map(declaration(options)).join(';')
-        + '}';
-    }
+Compiler.prototype.rule = function(node){
+  if (this.compress) {
+    return node.selector
+      + '{'
+      + node.declarations.map(this.declaration.bind(this)).join(';')
+      + '}';
   }
 
-  return function(rule){
-    return rule.selector
-      + ' {\n'
-      + rule.declarations.map(declaration(options)).join('\n')
-      + '\n}';
-  }
-}
+  return node.selector
+    + ' {\n'
+    + node.declarations.map(this.declaration.bind(this)).join('\n')
+    + '\n}';
+};
 
 /**
- * Compile declarations.
+ * Visit declaration node.
  */
 
-function declaration(options) {
-  if (options.compress) {
-    return function(decl){
-      return decl.property + ':' + decl.value;
-    }
+Compiler.prototype.declaration = function(node){
+  if (this.compress) {
+    return node.property + ':' + node.value;
   }
 
-  return function(decl){
-    return '  ' + decl.property + ': ' + decl.value + ';';
-  }
-}
-
-/**
- * Indent.
- */
-
-function indent(fn) {
-  return function(val){
-    return '  ' + fn(val);
-  }
-}
+  return '  ' + node.property + ': ' + node.value + ';';
+};
