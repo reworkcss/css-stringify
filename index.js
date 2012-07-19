@@ -22,8 +22,10 @@ module.exports = function(node, options){
 function visit(options) {
   var _rule = rule(options);
   var _keyframes = keyframes(options);
+  var _media = media(options);
   return function(node){
     if (node.keyframes) return _keyframes(node);
+    if (node.media) return _media(node);
     if (node.import) return atimport(node);
     return _rule(node);
   }
@@ -35,6 +37,20 @@ function visit(options) {
 
 function atimport(rule) {
   return '@import ' + rule.import + ';';
+}
+
+/**
+ * Compile media.
+ */
+
+function media(options) {
+  return function(media){
+    return '@media '
+      + media.media
+      + ' {\n'
+      + media.rules.map(indent(visit(options))).join('\n\n')
+      + '\n}';
+  }
 }
 
 /**
