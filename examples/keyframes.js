@@ -9,4 +9,4 @@ var parse = require('css-parse')
   , read = fs.readFileSync
   , css = read('examples/keyframes.css', 'utf8');
 
-console.log(stringify(parse(css), { compress: true }));
+console.log(stringify(parse(css), { compress: false }));

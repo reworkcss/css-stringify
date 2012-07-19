@@ -110,7 +110,7 @@ Compiler.prototype.keyframe = function(node){
     + ' {\n'
     + node.declarations.map(function(node){
       return '  ' + self.declaration(node);
-    }).join(';')
+    }).join(';\n')
     + '\n  }\n'
 };
 
@@ -128,7 +128,7 @@ Compiler.prototype.rule = function(node){
 
   return node.selector
     + ' {\n'
-    + node.declarations.map(this.declaration.bind(this)).join('\n')
+    + node.declarations.map(this.declaration.bind(this)).join(';\n')
     + '\n}';
 };
 
@@ -141,5 +141,5 @@ Compiler.prototype.declaration = function(node){
     return node.property + ':' + node.value;
   }
 
-  return '  ' + node.property + ': ' + node.value + ';';
+  return '  ' + node.property + ': ' + node.value;
 };
