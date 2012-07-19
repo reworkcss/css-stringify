@@ -25,7 +25,7 @@ function visit(options) {
   return function(node){
     if (node.keyframes) return _keyframes(node);
     if (node.import) return atimport(node);
-    return _rule(options);
+    return _rule(node);
   }
 }
 
