@@ -1,7 +1,9 @@
 
 module.exports = function(node, options){
   options = options || {};
-  return node.stylesheet.rules.map(rule(options)).join('\n\n');
+  return options.compress
+    ? node.stylesheet.rules.map(rule(options)).join('')
+    : node.stylesheet.rules.map(rule(options)).join('\n\n');
 };
 
 function rule(options) {
