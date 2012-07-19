@@ -16,12 +16,22 @@ module.exports = function(node, options){
 };
 
 /**
+ * Compile import.
+ */
+
+function atimport(rule) {
+  return '@import ' + rule.import + ';';
+}
+
+/**
  * Compile rule.
  */
 
 function rule(options) {
   if (options.compress) {
     return function(rule) {
+      if (rule.import) return atimport(rule);
+
       return rule.selector
         + '{'
         + rule.declarations.map(declaration(options)).join(';')
@@ -30,6 +40,8 @@ function rule(options) {
   }
 
   return function(rule) {
+    if (rule.import) return atimport(rule);
+
     return rule.selector
       + ' {\n'
       + rule.declarations.map(declaration(options)).join('\n')
