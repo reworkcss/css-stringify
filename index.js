@@ -1,6 +1,6 @@
 
 module.exports = function(node){
-  return node.stylesheet.rules.map(rule).join('\n');
+  return node.stylesheet.rules.map(rule).join('\n\n');
 };
 
 function rule(rule) {
