@@ -1,10 +1,23 @@
 
+/**
+ * Stringfy the given AST `node`.
+ *
+ * @param {Object} node
+ * @param {Object} options
+ * @return {String}
+ * @api public
+ */
+
 module.exports = function(node, options){
   options = options || {};
   return options.compress
     ? node.stylesheet.rules.map(rule(options)).join('')
     : node.stylesheet.rules.map(rule(options)).join('\n\n');
 };
+
+/**
+ * Compile rule.
+ */
 
 function rule(options) {
   if (options.compress) {
@@ -23,6 +36,10 @@ function rule(options) {
       + '\n}';
   }
 }
+
+/**
+ * Compile declarations.
+ */
 
 function declaration(options) {
   if (options.compress) {
