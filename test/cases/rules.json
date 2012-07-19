@@ -7,6 +7,10 @@
           {
             "property": "name",
             "value": "'tobi'"
+          },
+          {
+            "property": "age",
+            "value": "2"
           }
         ]
       },
@@ -16,6 +20,10 @@
           {
             "property": "name",
             "value": "'loki'"
+          },
+          {
+            "property": "age",
+            "value": "1"
           }
         ]
       }
