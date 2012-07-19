@@ -6,10 +6,10 @@ module.exports = function(node){
 function rule(rule) {
   return rule.selector
     + ' {\n'
-    + rule.declarations.map(declaration).join(';\n')
+    + rule.declarations.map(declaration).join('\n')
     + '\n}';
 }
 
 function declaration(decl) {
-  return decl.property + ': ' + decl.value;
+  return '  ' + decl.property + ': ' + decl.value + ';';
 }
