@@ -9,4 +9,4 @@ var parse = require('css-parse')
   , read = fs.readFileSync
   , css = read('examples/dialog.css', 'utf8');
 
-console.log(stringify(parse(css)));
+console.log(stringify(parse(css), { compress: true }));
