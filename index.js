@@ -58,6 +58,15 @@ Compiler.prototype.import = function(node){
 
 Compiler.prototype.media = function(node){
   var self = this;
+
+  if (this.compress) {
+    return '@media '
+      + node.media
+      + '{'
+      + node.rules.map(this.visit.bind(this)).join('')
+      + '}';
+  }
+
   return '@media '
     + node.media
     + ' {\n'
