@@ -1,9 +1,0 @@
-{
-  "stylesheet": {
-    "rules": [
-      {
-        "import": "'foo.css'"
-      }
-    ]
-  }
-}

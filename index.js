@@ -129,13 +129,13 @@ Compiler.prototype.keyframe = function(node){
 
 Compiler.prototype.rule = function(node){
   if (this.compress) {
-    return node.selector
+    return node.selectors.join(',')
       + '{'
       + node.declarations.map(this.declaration.bind(this)).join(';')
       + '}';
   }
 
-  return node.selector
+  return node.selectors.join(',\n')
     + ' {\n'
     + node.declarations.map(this.declaration.bind(this)).join(';\n')
     + '\n}';
