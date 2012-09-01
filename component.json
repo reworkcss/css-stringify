@@ -1,0 +1,7 @@
+{
+  "name": "css-stringify",
+  "version": "1.0.1",
+  "description": "CSS compiler",
+  "keywords": ["css", "parser", "stylesheet"],
+  "scripts": ["index.js"]
+}
