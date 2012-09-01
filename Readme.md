@@ -3,6 +3,10 @@
 
   CSS compiler using the AST provided by [css-parse](https://github.com/visionmedia/node-css-parse).
 
+## Performance
+
+  Formats 15,000 lines of CSS (2mb) in 23ms on my macbook air.
+
 ## License 
 
 (The MIT License)
