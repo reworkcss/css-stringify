@@ -38,6 +38,7 @@ Compiler.prototype.compile = function(node){
  */
 
 Compiler.prototype.visit = function(node){
+  if (node.charset) return this.charset(node);
   if (node.keyframes) return this.keyframes(node);
   if (node.media) return this.media(node);
   if (node.import) return this.import(node);
@@ -75,6 +76,18 @@ Compiler.prototype.media = function(node){
     }).join('\n\n')
     + '\n}';
 };
+
+/**
+ * Visit charset node.
+ */
+
+Compiler.prototype.charset = function(node){
+  if (this.compress) {
+    return '@charset ' + node.charset + ";";
+  }
+
+  return '@charset ' + node.charset + ";\n";
+}
 
 /**
  * Visit keyframes node.
