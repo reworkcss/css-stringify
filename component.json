@@ -3,6 +3,6 @@
   "repo": "visionmedia/node-css-stringify",
   "version": "1.0.2",
   "description": "CSS compiler",
-  "keywords": ["css", "parser", "stylesheet"],
+  "keywords": ["css", "stringify", "stylesheet"],
   "scripts": ["index.js"]
 }

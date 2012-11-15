@@ -10,9 +10,6 @@
 
 module.exports = function(node, options){
   return new Compiler(options).compile(node);
-  return options.compress
-    ? node.stylesheet.rules.map(visit(options)).join('')
-    : node.stylesheet.rules.map(visit(options)).join('\n\n');
 };
 
 /**
@@ -22,6 +19,7 @@ module.exports = function(node, options){
 function Compiler(options) {
   options = options || {};
   this.compress = options.compress;
+  this.indentation = options.indent;
 }
 
 /**
@@ -29,7 +27,7 @@ function Compiler(options) {
  */
 
 Compiler.prototype.compile = function(node){
-  return node.stylesheet.rules.map(this.visit.bind(this))
+  return node.stylesheet.rules.map(this.visit, this)
     .join(this.compress ? '' : '\n\n');
 };
 
@@ -58,22 +56,20 @@ Compiler.prototype.import = function(node){
  */
 
 Compiler.prototype.media = function(node){
-  var self = this;
-
   if (this.compress) {
     return '@media '
       + node.media
       + '{'
-      + node.rules.map(this.visit.bind(this)).join('')
+      + node.rules.map(this.visit, this).join('')
       + '}';
   }
 
   return '@media '
     + node.media
     + ' {\n'
-    + node.rules.map(function(node){
-      return '  ' + self.visit(node);
-    }).join('\n\n')
+    + this.indent(1)
+    + node.rules.map(this.visit, this).join('\n\n')
+    + this.indent(-1)
     + '\n}';
 };
 
@@ -83,11 +79,11 @@ Compiler.prototype.media = function(node){
 
 Compiler.prototype.charset = function(node){
   if (this.compress) {
-    return '@charset ' + node.charset + ";";
+    return '@charset ' + node.charset + ';';
   }
 
-  return '@charset ' + node.charset + ";\n";
-}
+  return '@charset ' + node.charset + ';\n';
+};
 
 /**
  * Visit keyframes node.
@@ -100,7 +96,7 @@ Compiler.prototype.keyframes = function(node){
       + 'keyframes '
       + node.name
       + '{'
-      + node.keyframes.map(this.keyframe.bind(this)).join('')
+      + node.keyframes.map(this.keyframe, this).join('')
       + '}';
   }
 
@@ -109,7 +105,9 @@ Compiler.prototype.keyframes = function(node){
     + 'keyframes '
     + node.name
     + ' {\n'
-    + node.keyframes.map(this.keyframe.bind(this)).join('\n')
+    + this.indent(1)
+    + node.keyframes.map(this.keyframe, this).join('\n')
+    + this.indent(-1)
     + '}';
 };
 
@@ -118,22 +116,20 @@ Compiler.prototype.keyframes = function(node){
  */
 
 Compiler.prototype.keyframe = function(node){
-  var self = this;
-
   if (this.compress) {
     return node.values.join(',')
       + '{'
-      + node.declarations.map(this.declaration.bind(this)).join(';')
-      + '}'
+      + node.declarations.map(this.declaration, this).join(';')
+      + '}';
   }
 
-  return '  '
+  return this.indent()
     + node.values.join(', ')
     + ' {\n'
-    + node.declarations.map(function(node){
-      return '  ' + self.declaration(node);
-    }).join(';\n')
-    + '\n  }\n'
+    + this.indent(1)
+    + node.declarations.map(this.declaration, this).join(';\n')
+    + this.indent(-1)
+    + '\n' + this.indent() + '}\n';
 };
 
 /**
@@ -144,14 +140,16 @@ Compiler.prototype.rule = function(node){
   if (this.compress) {
     return node.selectors.join(',')
       + '{'
-      + node.declarations.map(this.declaration.bind(this)).join(';')
+      + node.declarations.map(this.declaration, this).join(';')
       + '}';
   }
 
-  return node.selectors.join(',\n')
+  return this.indent() + node.selectors.join(',\n')
     + ' {\n'
-    + node.declarations.map(this.declaration.bind(this)).join(';\n')
-    + '\n}';
+    + this.indent(1)
+    + node.declarations.map(this.declaration, this).join(';\n')
+    + this.indent(-1)
+    + '\n' + this.indent() + '}';
 };
 
 /**
@@ -163,5 +161,20 @@ Compiler.prototype.declaration = function(node){
     return node.property + ':' + node.value;
   }
 
-  return '  ' + node.property + ': ' + node.value;
+  return this.indent() + node.property + ': ' + node.value;
+};
+
+/**
+ * Increase, decrease or return current indentation.
+ */
+Compiler.prototype.indent = function(level) {
+  this.level = this.level || 1;
+
+  if (level !== undefined) {
+    this.level += level;
+
+    return '';
+  }
+
+  return Array(this.level).join(this.indentation || '  ');
 };

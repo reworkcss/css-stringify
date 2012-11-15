@@ -19,6 +19,6 @@ describe('stringify(obj)', function(){
       if (compress) file = file.replace('.compress', '');
       var ret = stringify(parse(css), { compress: compress });
       ret.should.equal(css);
-    })
+    });
   });
-})
+});
