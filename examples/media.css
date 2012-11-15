@@ -3,6 +3,7 @@
     background: #fffef0;
     color: #300;
   }
+
   body {
     max-width: 35em;
     margin: 0 auto;
@@ -14,6 +15,7 @@
     background: #fff;
     color: #000;
   }
+
   body {
     padding: 1in;
     border: 0.5pt solid #666;

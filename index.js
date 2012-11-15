@@ -10,9 +10,6 @@
 
 module.exports = function(node, options){
   return new Compiler(options).compile(node);
-  return options.compress
-    ? node.stylesheet.rules.map(visit(options)).join('')
-    : node.stylesheet.rules.map(visit(options)).join('\n\n');
 };
 
 /**
@@ -22,6 +19,7 @@ module.exports = function(node, options){
 function Compiler(options) {
   options = options || {};
   this.compress = options.compress;
+  this.indentation = options.indent;
 }
 
 /**
@@ -69,9 +67,9 @@ Compiler.prototype.media = function(node){
   return '@media '
     + node.media
     + ' {\n'
-    + node.rules.map(function(node){
-      return '  ' + this.visit(node);
-    }, this).join('\n\n')
+    + this.indent(1)
+    + node.rules.map(this.visit, this).join('\n\n')
+    + this.indent(-1)
     + '\n}';
 };
 
@@ -107,7 +105,9 @@ Compiler.prototype.keyframes = function(node){
     + 'keyframes '
     + node.name
     + ' {\n'
+    + this.indent(1)
     + node.keyframes.map(this.keyframe, this).join('\n')
+    + this.indent(-1)
     + '}';
 };
 
@@ -123,13 +123,13 @@ Compiler.prototype.keyframe = function(node){
       + '}';
   }
 
-  return '  '
+  return this.indent()
     + node.values.join(', ')
     + ' {\n'
-    + node.declarations.map(function(node){
-      return '  ' + this.declaration(node);
-    }, this).join(';\n')
-    + '\n  }\n';
+    + this.indent(1)
+    + node.declarations.map(this.declaration, this).join(';\n')
+    + this.indent(-1)
+    + '\n' + this.indent() + '}\n';
 };
 
 /**
@@ -144,10 +144,12 @@ Compiler.prototype.rule = function(node){
       + '}';
   }
 
-  return node.selectors.join(',\n')
+  return this.indent() + node.selectors.join(',\n')
     + ' {\n'
+    + this.indent(1)
     + node.declarations.map(this.declaration, this).join(';\n')
-    + '\n}';
+    + this.indent(-1)
+    + '\n' + this.indent() + '}';
 };
 
 /**
@@ -159,5 +161,20 @@ Compiler.prototype.declaration = function(node){
     return node.property + ':' + node.value;
   }
 
-  return '  ' + node.property + ': ' + node.value;
+  return this.indent() + node.property + ': ' + node.value;
+};
+
+/**
+ * Increase, decrease or return current indentation.
+ */
+Compiler.prototype.indent = function(level) {
+  this.level = this.level || 1;
+
+  if (level !== undefined) {
+    this.level += level;
+
+    return '';
+  }
+
+  return Array(this.level).join(this.indentation || '  ');
 };
