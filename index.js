@@ -167,12 +167,12 @@ Compiler.prototype.declaration = function(node){
 /**
  * Increase, decrease or return current indentation.
  */
+
 Compiler.prototype.indent = function(level) {
   this.level = this.level || 1;
 
-  if (level !== undefined) {
+  if (null != level) {
     this.level += level;
-
     return '';
   }
 
