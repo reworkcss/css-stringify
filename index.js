@@ -29,7 +29,7 @@ function Compiler(options) {
  */
 
 Compiler.prototype.compile = function(node){
-  return node.stylesheet.rules.map(this.visit.bind(this))
+  return node.stylesheet.rules.map(this.visit, this)
     .join(this.compress ? '' : '\n\n');
 };
 
@@ -58,13 +58,11 @@ Compiler.prototype.import = function(node){
  */
 
 Compiler.prototype.media = function(node){
-  var self = this;
-
   if (this.compress) {
     return '@media '
       + node.media
       + '{'
-      + node.rules.map(this.visit.bind(this)).join('')
+      + node.rules.map(this.visit, this).join('')
       + '}';
   }
 
@@ -72,8 +70,8 @@ Compiler.prototype.media = function(node){
     + node.media
     + ' {\n'
     + node.rules.map(function(node){
-      return '  ' + self.visit(node);
-    }).join('\n\n')
+      return '  ' + this.visit(node);
+    }, this).join('\n\n')
     + '\n}';
 };
 
@@ -83,11 +81,11 @@ Compiler.prototype.media = function(node){
 
 Compiler.prototype.charset = function(node){
   if (this.compress) {
-    return '@charset ' + node.charset + ";";
+    return '@charset ' + node.charset + ';';
   }
 
-  return '@charset ' + node.charset + ";\n";
-}
+  return '@charset ' + node.charset + ';\n';
+};
 
 /**
  * Visit keyframes node.
@@ -100,7 +98,7 @@ Compiler.prototype.keyframes = function(node){
       + 'keyframes '
       + node.name
       + '{'
-      + node.keyframes.map(this.keyframe.bind(this)).join('')
+      + node.keyframes.map(this.keyframe, this).join('')
       + '}';
   }
 
@@ -109,7 +107,7 @@ Compiler.prototype.keyframes = function(node){
     + 'keyframes '
     + node.name
     + ' {\n'
-    + node.keyframes.map(this.keyframe.bind(this)).join('\n')
+    + node.keyframes.map(this.keyframe, this).join('\n')
     + '}';
 };
 
@@ -118,22 +116,20 @@ Compiler.prototype.keyframes = function(node){
  */
 
 Compiler.prototype.keyframe = function(node){
-  var self = this;
-
   if (this.compress) {
     return node.values.join(',')
       + '{'
-      + node.declarations.map(this.declaration.bind(this)).join(';')
-      + '}'
+      + node.declarations.map(this.declaration, this).join(';')
+      + '}';
   }
 
   return '  '
     + node.values.join(', ')
     + ' {\n'
     + node.declarations.map(function(node){
-      return '  ' + self.declaration(node);
-    }).join(';\n')
-    + '\n  }\n'
+      return '  ' + this.declaration(node);
+    }, this).join(';\n')
+    + '\n  }\n';
 };
 
 /**
@@ -144,13 +140,13 @@ Compiler.prototype.rule = function(node){
   if (this.compress) {
     return node.selectors.join(',')
       + '{'
-      + node.declarations.map(this.declaration.bind(this)).join(';')
+      + node.declarations.map(this.declaration, this).join(';')
       + '}';
   }
 
   return node.selectors.join(',\n')
     + ' {\n'
-    + node.declarations.map(this.declaration.bind(this)).join(';\n')
+    + node.declarations.map(this.declaration, this).join(';\n')
     + '\n}';
 };
 
