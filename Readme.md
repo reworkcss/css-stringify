@@ -1,13 +1,13 @@
 
 # css-stringify
 
-  CSS compiler using the AST provided by [css-parse](https://github.com/visionmedia/node-css-parse).
+  CSS compiler using the AST provided by [css-parse](https://github.com/visionmedia/css-parse).
 
 ## Performance
 
   Formats 15,000 lines of CSS (2mb) in 23ms on my macbook air.
 
-## License 
+## License
 
 (The MIT License)
 
