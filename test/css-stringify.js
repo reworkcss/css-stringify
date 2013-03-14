@@ -21,4 +21,40 @@ describe('stringify(obj)', function(){
       ret.should.equal(css);
     });
   });
+
+  it('should not stringify empty selectors', function(){
+    var node = {
+      stylesheet: {
+        rules: [{
+          selectors: [],
+          declarations: [{
+            property: 'color',
+            value: 'black'
+          }]
+        }]
+      }
+    };
+
+    var ret = stringify(node);
+    ret.should.equal('');
+  });
+
+  it('should not stringify empty declarations', function(){
+    var node = {
+      stylesheet: {
+        rules: [{
+          selectors: [
+            'one',
+            'two',
+            'three'
+          ],
+          declarations: []
+        }]
+      }
+    };
+
+    var ret = stringify(node);
+    ret.should.equal('');
+  });
 });
+

@@ -28,6 +28,7 @@ function Compiler(options) {
 
 Compiler.prototype.compile = function(node){
   return node.stylesheet.rules.map(this.visit, this)
+    .filter(identity)
     .join(this.compress ? '' : '\n\n');
 };
 
@@ -134,9 +135,12 @@ Compiler.prototype.keyframe = function(node){
 
 /**
  * Visit rule node.
+ * If no selectors or no declarations, returns an empty string.
  */
 
 Compiler.prototype.rule = function(node){
+  if (!node.selectors.length || !node.declarations.length) return '';
+
   if (this.compress) {
     return node.selectors.join(',')
       + '{'
@@ -178,3 +182,11 @@ Compiler.prototype.indent = function(level) {
 
   return Array(this.level).join(this.indentation || '  ');
 };
+
+/**
+ * Identity function for filtering.
+ */
+
+function identity(x) {
+  return x
+}
