@@ -16,7 +16,8 @@
     color: #000;
   }
 
-  body {
+  body,
+  #content {
     padding: 1in;
     border: 0.5pt solid #666;
   }

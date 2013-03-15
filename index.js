@@ -137,6 +137,8 @@ Compiler.prototype.keyframe = function(node){
  */
 
 Compiler.prototype.rule = function(node){
+  var indent = this.indent();
+
   if (this.compress) {
     return node.selectors.join(',')
       + '{'
@@ -144,7 +146,7 @@ Compiler.prototype.rule = function(node){
       + '}';
   }
 
-  return this.indent() + node.selectors.join(',\n')
+  return node.selectors.map(function(s){ return indent + s }).join(',\n')
     + ' {\n'
     + this.indent(1)
     + node.declarations.map(this.declaration, this).join(';\n')
