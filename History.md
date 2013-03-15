@@ -1,4 +1,9 @@
 
+1.0.5 / 2013-03-15 
+==================
+
+  * fix indentation of multiple selectors in @media. Closes #11
+
 1.0.4 / 2012-11-15 
 ==================
 
