@@ -18,7 +18,7 @@ describe('stringify(obj)', function(){
       var css = read(path.join('test', 'cases', file + '.css'), 'utf8');
       if (compress) file = file.replace('.compress', '');
       var ret = stringify(parse(css), { compress: compress });
-      ret.should.equal(css);
+      ret.trim().should.equal(css.trim());
     });
   });
 });

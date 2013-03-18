@@ -36,11 +36,20 @@ Compiler.prototype.compile = function(node){
  */
 
 Compiler.prototype.visit = function(node){
+  if (node.comment) return this.comment(node);
   if (node.charset) return this.charset(node);
   if (node.keyframes) return this.keyframes(node);
   if (node.media) return this.media(node);
   if (node.import) return this.import(node);
   return this.rule(node);
+};
+
+/**
+ * Visit comment node.
+ */
+
+Compiler.prototype.comment = function(node){
+  return '/*' + node.comment + '*/';
 };
 
 /**
