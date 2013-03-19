@@ -1,4 +1,10 @@
 
+1.1.0 / 2013-03-19 
+==================
+
+  * add omission of comments when compressed
+  * add comment support
+
 1.0.5 / 2013-03-15 
 ==================
 
