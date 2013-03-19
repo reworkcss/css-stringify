@@ -49,6 +49,7 @@ Compiler.prototype.visit = function(node){
  */
 
 Compiler.prototype.comment = function(node){
+  if (this.compress) return '';
   return '/*' + node.comment + '*/';
 };
 
