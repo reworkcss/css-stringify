@@ -22,3 +22,37 @@ describe('stringify(obj)', function(){
     });
   });
 });
+
+describe('stringify(obj, {map: []})', function(){
+  it('should generate mappings', function(){
+    var ast = { stylesheet: { rules: [
+      { selectors: ['.foo'], declarations: [], loc: { line: 2, column: 4 } },
+      { selectors: ['.bar'], declarations: [], loc: { line: 4, column: 4 } }
+    ]}};
+    var map = [];
+    stringify(ast, { map: map });
+    map.should.eql([
+      {
+        source: { line: 2, column: 4 },
+        generated: { line: 1, column: 1 }
+      },
+      {
+        source: { line: 4, column: 4 },
+        generated: { line: 4, column: 1 }
+      }
+    ]);
+
+    map = [];
+    stringify(ast, { map: map, compress: true });
+    map.should.eql([
+      {
+        source: { line: 2, column: 4 },
+        generated: { line: 1, column: 1 }
+      },
+      {
+        source: { line: 4, column: 4 },
+        generated: { line: 1, column: 7 }
+      }
+    ]);
+  });
+});
