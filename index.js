@@ -19,7 +19,7 @@ module.exports = function(node, options){
 function Compiler(options) {
   options = options || {};
   this.compress = options.compress;
-  this.indentation = options.indent;
+  this.indentation = options.indent || '  ';
   this.map = options.map;
 }
 
@@ -31,6 +31,7 @@ Compiler.prototype.compile = function(node){
   this.out = '';
   this.line = 1;
   this.column = 1;
+  this.level = 1;
   this.each(node.stylesheet.rules, this.visit);
   return this.out;
 };
@@ -55,7 +56,8 @@ Compiler.prototype.visit = function(node){
 Compiler.prototype.comment = function(node){
   if (this.compress) return;
   this.writeln('/*' + node.comment + '*/');
-  this.line += node.comment.split(/\n/).length-1;
+  var newlines = node.comment.match(/\n/g);
+  if (newlines) this.line += newlines.length;
 };
 
 /**
@@ -119,11 +121,12 @@ Compiler.prototype.keyframe = function(node){
 
 Compiler.prototype.rule = function(node){
   if (this.map && node.loc) {
+    var indent = (this.level-1) * this.indentation.length;
     this.map.push({
       source: node.loc,
       generated: {
         line: this.line,
-        column: this.column
+        column: this.column + indent
       }
     });
   }
@@ -158,7 +161,6 @@ Compiler.prototype.declarations = function(nodes){
  */
 
 Compiler.prototype.indent = function(level) {
-  this.level = this.level || 1;
   this.level += level;
 };
 
@@ -184,7 +186,7 @@ Compiler.prototype.each = function(nodes, fn){
 Compiler.prototype.write = function(str, indent){
   if (!this.compress) {
     if (indent === undefined) {
-      indent = Array(this.level).join(this.indentation || '  ');
+      indent = Array(this.level).join(this.indentation);
     }
     if (indent) {
       this.out += indent;
