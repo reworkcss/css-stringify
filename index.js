@@ -123,7 +123,7 @@ Compiler.prototype.rule = function(node){
   if (this.map && node.loc) {
     var indent = (this.level-1) * this.indentation.length;
     this.map.push({
-      source: node.loc,
+      original: node.loc,
       generated: {
         line: this.line,
         column: this.column + indent

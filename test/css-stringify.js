@@ -21,8 +21,8 @@ describe('stringify(obj)', function(){
       var map = [];
       var ret = stringify(ast, { compress: compress, map: map });
       ret.trim().should.equal(css.trim());
-      map.forEach(function(loc) {
-        loc.generated.should.eql(loc.source);
+      map.forEach(function(m) {
+        m.generated.should.eql(m.original);
       });
     });
   });
