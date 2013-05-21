@@ -19,7 +19,9 @@ module.exports = function(node, options){
 function Compiler(options) {
   options = options || {};
   this.compress = options.compress;
-  this.indentation = options.indent;
+  this.indentation = options.compress ? '' : options.indent || '  ';
+  this.map = options.map;
+  this.mapUrl = options.mapUrl;
 }
 
 /**
@@ -27,8 +29,13 @@ function Compiler(options) {
  */
 
 Compiler.prototype.compile = function(node){
-  return node.stylesheet.rules.map(this.visit, this)
-    .join(this.compress ? '' : '\n\n');
+  this.out = '';
+  this.line = 1;
+  this.column = 1;
+  this.level = 1;
+  this.each(node.stylesheet.rules, this.visit);
+  if (this.mapUrl) this.out += '\n/*@ sourceMappingURL=' + this.mapUrl + ' */';
+  return this.out;
 };
 
 /**
@@ -36,12 +43,12 @@ Compiler.prototype.compile = function(node){
  */
 
 Compiler.prototype.visit = function(node){
-  if (node.comment) return this.comment(node);
-  if (node.charset) return this.charset(node);
-  if (node.keyframes) return this.keyframes(node);
-  if (node.media) return this.media(node);
-  if (node.import) return this.import(node);
-  return this.rule(node);
+  if (node.comment) this.comment(node);
+  else if (node.charset) this.charset(node);
+  else if (node.keyframes) this.keyframes(node);
+  else if (node.media) this.media(node);
+  else if (node.import) this.import(node);
+  else this.rule(node);
 };
 
 /**
@@ -49,8 +56,10 @@ Compiler.prototype.visit = function(node){
  */
 
 Compiler.prototype.comment = function(node){
-  if (this.compress) return '';
-  return '/*' + node.comment + '*/';
+  if (this.compress) return;
+  this.writeln('/*' + node.comment + '*/');
+  var newlines = node.comment.match(/\n/g);
+  if (newlines) this.line += newlines.length;
 };
 
 /**
@@ -58,7 +67,7 @@ Compiler.prototype.comment = function(node){
  */
 
 Compiler.prototype.import = function(node){
-  return '@import ' + node.import + ';';
+  this.write('@import ' + node.import + ';');
 };
 
 /**
@@ -66,21 +75,12 @@ Compiler.prototype.import = function(node){
  */
 
 Compiler.prototype.media = function(node){
-  if (this.compress) {
-    return '@media '
-      + node.media
-      + '{'
-      + node.rules.map(this.visit, this).join('')
-      + '}';
-  }
-
-  return '@media '
-    + node.media
-    + ' {\n'
-    + this.indent(1)
-    + node.rules.map(this.visit, this).join('\n\n')
-    + this.indent(-1)
-    + '\n}';
+  this.write('@media ' + node.media);
+  this.writeln('{', ' ');
+  this.indent(1);
+  this.each(node.rules, this.visit);
+  this.indent(-1);
+  this.writeln('}');
 };
 
 /**
@@ -88,11 +88,7 @@ Compiler.prototype.media = function(node){
  */
 
 Compiler.prototype.charset = function(node){
-  if (this.compress) {
-    return '@charset ' + node.charset + ';';
-  }
-
-  return '@charset ' + node.charset + ';\n';
+  this.writeln('@charset ' + node.charset + ';');
 };
 
 /**
@@ -100,25 +96,12 @@ Compiler.prototype.charset = function(node){
  */
 
 Compiler.prototype.keyframes = function(node){
-  if (this.compress) {
-    return '@'
-      + (node.vendor || '')
-      + 'keyframes '
-      + node.name
-      + '{'
-      + node.keyframes.map(this.keyframe, this).join('')
-      + '}';
-  }
-
-  return '@'
-    + (node.vendor || '')
-    + 'keyframes '
-    + node.name
-    + ' {\n'
-    + this.indent(1)
-    + node.keyframes.map(this.keyframe, this).join('\n')
-    + this.indent(-1)
-    + '}';
+  this.write('@' + (node.vendor || '') + 'keyframes ' + node.name);
+  this.writeln('{', ' ');
+  this.indent(1);
+  this.each(node.keyframes, this.keyframe);
+  this.indent(-1);
+  this.writeln('}');
 };
 
 /**
@@ -126,20 +109,12 @@ Compiler.prototype.keyframes = function(node){
  */
 
 Compiler.prototype.keyframe = function(node){
-  if (this.compress) {
-    return node.values.join(',')
-      + '{'
-      + node.declarations.map(this.declaration, this).join(';')
-      + '}';
-  }
-
-  return this.indent()
-    + node.values.join(', ')
-    + ' {\n'
-    + this.indent(1)
-    + node.declarations.map(this.declaration, this).join(';\n')
-    + this.indent(-1)
-    + '\n' + this.indent() + '}\n';
+  this.write(node.values.join(', '));
+  this.writeln('{', ' ');
+  this.indent(1);
+  this.declarations(node.declarations);
+  this.indent(-1);
+  this.writeln('}');
 };
 
 /**
@@ -147,33 +122,40 @@ Compiler.prototype.keyframe = function(node){
  */
 
 Compiler.prototype.rule = function(node){
-  var indent = this.indent();
-
-  if (this.compress) {
-    return node.selectors.join(',')
-      + '{'
-      + node.declarations.map(this.declaration, this).join(';')
-      + '}';
+  if (this.map && node.loc) {
+    var indent = (this.level-1) * this.indentation.length;
+    this.map.push({
+      original: node.loc,
+      generated: {
+        line: this.line,
+        column: this.column + indent
+      }
+    });
   }
-
-  return node.selectors.map(function(s){ return indent + s }).join(',\n')
-    + ' {\n'
-    + this.indent(1)
-    + node.declarations.map(this.declaration, this).join(';\n')
-    + this.indent(-1)
-    + '\n' + this.indent() + '}';
+  var last = node.selectors.length-1;
+  node.selectors.forEach(function(s, i){
+    this.write(s);
+    if (i == last) this.writeln('{', ' ');
+    else this.writeln(',');
+  }, this);
+  this.indent(1);
+  this.declarations(node.declarations);
+  this.indent(-1);
+  this.writeln('}');
 };
 
 /**
  * Visit declaration node.
  */
 
-Compiler.prototype.declaration = function(node){
-  if (this.compress) {
-    return node.property + ':' + node.value;
-  }
-
-  return this.indent() + node.property + ': ' + node.value;
+Compiler.prototype.declarations = function(nodes){
+  var last = nodes.length-1;
+  nodes.forEach(function(node, i) {
+    this.write(node.property + ':');
+    this.write(node.value, ' ');
+    if (i != last) this.write(';', false);
+    this.writeln();
+  }, this);
 };
 
 /**
@@ -181,12 +163,54 @@ Compiler.prototype.declaration = function(node){
  */
 
 Compiler.prototype.indent = function(level) {
-  this.level = this.level || 1;
-
-  if (null != level) {
-    this.level += level;
-    return '';
-  }
-
-  return Array(this.level).join(this.indentation || '  ');
+  this.level += level;
 };
+
+/**
+ * Invoke `fn` for each item in `nodes`.
+ */
+
+Compiler.prototype.each = function(nodes, fn){
+  var last = nodes.length-1;
+  nodes.forEach(function(node, i) {
+    fn.call(this, node);
+    if (i !== last) this.writeln();
+  }, this);
+};
+
+/**
+ * Append the given `str`.
+ * If `indent` is omitted the default indentation is applied.
+ * If `indent` is falsy `str` is append without indentation.
+ * In compression mode all indetation is ignored.
+ */
+
+Compiler.prototype.write = function(str, indent){
+  if (!this.compress) {
+    if (indent === undefined) {
+      indent = Array(this.level).join(this.indentation);
+    }
+    if (indent) {
+      this.out += indent;
+      this.column += indent.length;
+    }
+  }
+  this.out += str;
+  this.column += str.length;
+};
+
+/**
+ * Append the given `str` followed by a line break.
+ * This increases the internal line counter by one unless compression is turned
+ * on, in which case no line breaks are added.
+ */
+
+Compiler.prototype.writeln = function(str, indent){
+  if (arguments.length) this.write(str, indent);
+  if (!this.compress) {
+    this.out += '\n';
+    this.line++;
+    this.column = 1;
+  }
+};
+

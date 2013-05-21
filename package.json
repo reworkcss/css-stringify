@@ -4,10 +4,13 @@
   "description": "CSS compiler",
   "keywords": ["css", "stringify", "stylesheet"],
   "author": "TJ Holowaychuk <tj@vision-media.ca>",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --require should"
+  },
   "devDependencies": {
     "mocha": "*",
     "should": "*",
-    "css-parse": "1.1.0"
+    "css-parse": "https://github.com/fgnass/css-parse/tarball/master"
   },
   "main": "index"
 }
