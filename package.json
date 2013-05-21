@@ -7,7 +7,7 @@
   "devDependencies": {
     "mocha": "*",
     "should": "*",
-    "css-parse": "1.1.0"
+    "css-parse": "https://github.com/fgnass/css-parse/tarball/master"
   },
   "main": "index"
 }
