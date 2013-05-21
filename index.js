@@ -19,7 +19,7 @@ module.exports = function(node, options){
 function Compiler(options) {
   options = options || {};
   this.compress = options.compress;
-  this.indentation = options.indent || '  ';
+  this.indentation = options.compress ? '' : options.indent || '  ';
   this.map = options.map;
   this.mapUrl = options.mapUrl;
 }
