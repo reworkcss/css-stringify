@@ -36,6 +36,7 @@ Compiler.prototype.compile = function(node){
  */
 
 Compiler.prototype.visit = function(node){
+  if ('page' == node.type) return this.page(node);
   if (node.document) return this.document(node);
   if (node.comment) return this.comment(node);
   if (node.charset) return this.charset(node);
@@ -163,6 +164,19 @@ Compiler.prototype.keyframe = function(node){
     + node.declarations.map(this.declaration, this).join(';\n')
     + this.indent(-1)
     + '\n' + this.indent() + '}\n';
+};
+
+/**
+ * Visit page node.
+ */
+
+Compiler.prototype.page = function(node){
+  return '@page ' + node.selectors.join(', ')
+    + ' {\n'
+    + this.indent(1)
+    + node.declarations.map(this.declaration, this).join(';\n')
+    + this.indent(-1)
+    + '\n}';
 };
 
 /**
