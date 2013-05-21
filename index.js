@@ -21,6 +21,7 @@ function Compiler(options) {
   this.compress = options.compress;
   this.indentation = options.indent || '  ';
   this.map = options.map;
+  this.mapUrl = options.mapUrl;
 }
 
 /**
@@ -33,6 +34,7 @@ Compiler.prototype.compile = function(node){
   this.column = 1;
   this.level = 1;
   this.each(node.stylesheet.rules, this.visit);
+  if (this.mapUrl) this.out += '\n/*@ sourceMappingURL=' + this.mapUrl + ' */';
   return this.out;
 };
 

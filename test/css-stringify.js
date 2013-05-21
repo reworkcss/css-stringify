@@ -26,4 +26,11 @@ describe('stringify(obj)', function(){
       });
     });
   });
+
+  it('should append sourceMappingURL comment', function(){
+    var ast = { stylesheet: { rules: [] }};
+    var ret = stringify(ast, { mapUrl: 'foo.map' });
+    ret.trim().should.equal('/*@ sourceMappingURL=foo.map */');
+  });
+
 });
