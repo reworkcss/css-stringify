@@ -36,6 +36,7 @@ Compiler.prototype.compile = function(node){
  */
 
 Compiler.prototype.visit = function(node){
+  if (node.document) return this.document(node);
   if (node.comment) return this.comment(node);
   if (node.charset) return this.charset(node);
   if (node.keyframes) return this.keyframes(node);
@@ -76,6 +77,28 @@ Compiler.prototype.media = function(node){
 
   return '@media '
     + node.media
+    + ' {\n'
+    + this.indent(1)
+    + node.rules.map(this.visit, this).join('\n\n')
+    + this.indent(-1)
+    + '\n}';
+};
+
+/**
+ * Visit document node.
+ */
+
+Compiler.prototype.document = function(node){
+  var doc = '@' + (node.vendor || '') + 'document ' + node.document;
+
+  if (this.compress) {
+    return doc
+      + '{'
+      + node.rules.map(this.visit, this).join('')
+      + '}';
+  }
+
+  return doc + ' '
     + ' {\n'
     + this.indent(1)
     + node.rules.map(this.visit, this).join('\n\n')
