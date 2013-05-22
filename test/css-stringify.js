@@ -17,7 +17,7 @@ describe('stringify(obj)', function(){
     it('should stringify ' + file, function(){
       var css = read(path.join('test', 'cases', file + '.css'), 'utf8');
       if (compress) file = file.replace('.compress', '');
-      var ast = parse(css, { loc: true });
+      var ast = parse(css, { position: true });
       var map = [];
       var ret = stringify(ast, { compress: compress, map: map });
       ret.trim().should.equal(css.trim());

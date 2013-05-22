@@ -122,10 +122,10 @@ Compiler.prototype.keyframe = function(node){
  */
 
 Compiler.prototype.rule = function(node){
-  if (this.map && node.loc) {
+  if (this.map && node.position) {
     var indent = (this.level-1) * this.indentation.length;
     this.map.push({
-      original: node.loc,
+      original: node.position.start,
       generated: {
         line: this.line,
         column: this.column + indent

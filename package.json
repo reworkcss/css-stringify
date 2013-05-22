@@ -10,7 +10,7 @@
   "devDependencies": {
     "mocha": "*",
     "should": "*",
-    "css-parse": "https://github.com/fgnass/css-parse/tarball/master"
+    "css-parse": "https://github.com/fgnass/css-parse/tarball/add/pos"
   },
   "main": "index"
 }
