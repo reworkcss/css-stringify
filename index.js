@@ -36,14 +36,7 @@ Compiler.prototype.compile = function(node){
  */
 
 Compiler.prototype.visit = function(node){
-  if ('page' == node.type) return this.page(node);
-  if (node.document) return this.document(node);
-  if (node.comment) return this.comment(node);
-  if (node.charset) return this.charset(node);
-  if (node.keyframes) return this.keyframes(node);
-  if (node.media) return this.media(node);
-  if (node.import) return this.import(node);
-  return this.rule(node);
+  return this[node.type](node);
 };
 
 /**
