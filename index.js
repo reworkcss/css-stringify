@@ -27,7 +27,8 @@ function Compiler(options) {
  */
 
 Compiler.prototype.compile = function(node){
-  return node.stylesheet.rules.map(this.visit, this)
+  return node.stylesheet
+    .rules.map(this.visit, this)
     .join(this.compress ? '' : '\n\n');
 };
 
