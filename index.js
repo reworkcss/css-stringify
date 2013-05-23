@@ -178,18 +178,21 @@ Compiler.prototype.page = function(node){
 
 Compiler.prototype.rule = function(node){
   var indent = this.indent();
+  var decls = node.declarations;
 
   if (this.compress) {
+    if (!decls.length) return '';
+
     return node.selectors.join(',')
       + '{'
-      + node.declarations.map(this.declaration, this).join(';')
+      + decls.map(this.declaration, this).join(';')
       + '}';
   }
 
   return node.selectors.map(function(s){ return indent + s }).join(',\n')
     + ' {\n'
     + this.indent(1)
-    + node.declarations.map(this.declaration, this).join(';\n')
+    + decls.map(this.declaration, this).join(';\n')
     + this.indent(-1)
     + '\n' + this.indent() + '}';
 };
