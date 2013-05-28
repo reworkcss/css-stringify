@@ -186,14 +186,14 @@ Compiler.prototype.rule = function(node){
 
     return node.selectors.join(',')
       + '{'
-      + decls.map(this.declaration, this).join(';')
+      + decls.map(this.visit, this).join(';')
       + '}';
   }
 
   return node.selectors.map(function(s){ return indent + s }).join(',\n')
     + ' {\n'
     + this.indent(1)
-    + decls.map(this.declaration, this).join(';\n')
+    + decls.map(this.visit, this).join(';\n')
     + this.indent(-1)
     + '\n' + this.indent() + '}';
 };
