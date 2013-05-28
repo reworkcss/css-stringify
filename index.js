@@ -138,7 +138,7 @@ Compiler.prototype.keyframes = function(node){
       + 'keyframes '
       + node.name
       + '{'
-      + node.keyframes.map(this.keyframe, this).join('')
+      + node.keyframes.map(this.visit, this).join('')
       + '}';
   }
 
@@ -148,7 +148,7 @@ Compiler.prototype.keyframes = function(node){
     + node.name
     + ' {\n'
     + this.indent(1)
-    + node.keyframes.map(this.keyframe, this).join('\n')
+    + node.keyframes.map(this.visit, this).join('\n')
     + this.indent(-1)
     + '}';
 };
