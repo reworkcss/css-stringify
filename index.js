@@ -114,6 +114,20 @@ Compiler.prototype.charset = function(node){
 };
 
 /**
+ * Visit supports node.
+ */
+
+Compiler.prototype.supports = function(node){
+  return '@supports '
+    + node.supports
+    + ' {\n'
+    + this.indent(1)
+    + node.rules.map(this.visit, this).join('\n\n')
+    + this.indent(-1)
+    + '\n}';
+};
+
+/**
  * Visit keyframes node.
  */
 
