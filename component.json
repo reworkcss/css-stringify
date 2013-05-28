@@ -4,5 +4,9 @@
   "version": "1.2.0",
   "description": "CSS compiler",
   "keywords": ["css", "stringify", "stylesheet"],
-  "scripts": ["index.js"]
+  "scripts": [
+    "index.js",
+    "lib/compress.js",
+    "lib/identity.js"
+  ]
 }
