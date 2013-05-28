@@ -167,8 +167,12 @@ Compiler.prototype.keyframe = function(node){
  */
 
 Compiler.prototype.page = function(node){
-  return '@page ' + node.selectors.join(', ')
-    + ' {\n'
+  var sel = node.selectors.length
+    ? node.selectors.join(', ') + ' '
+    : '';
+
+  return '@page ' + sel
+    + '{\n'
     + this.indent(1)
     + node.declarations.map(this.visit, this).join('\n')
     + this.indent(-1)
