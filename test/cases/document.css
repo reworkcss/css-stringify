@@ -1,17 +1,17 @@
 @-moz-document url-prefix()  {
   .icon-spin {
-    height: .9em
+    height: .9em;
   }
 
   .btn .icon-spin {
-    height: auto
+    height: auto;
   }
 
   .icon-spin.icon-large {
-    height: 1.25em
+    height: 1.25em;
   }
 
   .btn .icon-spin.icon-large {
-    height: .75em
+    height: .75em;
   }
 }

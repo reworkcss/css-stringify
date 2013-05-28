@@ -144,10 +144,12 @@ Compiler.prototype.keyframes = function(node){
  */
 
 Compiler.prototype.keyframe = function(node){
+  var decls = node.declarations;
+
   if (this.compress) {
     return node.values.join(',')
       + '{'
-      + node.declarations.map(this.declaration, this).join(';')
+      + decls.map(this.visit, this).join('')
       + '}';
   }
 
@@ -155,7 +157,7 @@ Compiler.prototype.keyframe = function(node){
     + node.values.join(', ')
     + ' {\n'
     + this.indent(1)
-    + node.declarations.map(this.declaration, this).join(';\n')
+    + decls.map(this.visit, this).join('\n')
     + this.indent(-1)
     + '\n' + this.indent() + '}\n';
 };
@@ -168,7 +170,7 @@ Compiler.prototype.page = function(node){
   return '@page ' + node.selectors.join(', ')
     + ' {\n'
     + this.indent(1)
-    + node.declarations.map(this.declaration, this).join(';\n')
+    + node.declarations.map(this.visit, this).join('\n')
     + this.indent(-1)
     + '\n}';
 };
@@ -186,14 +188,14 @@ Compiler.prototype.rule = function(node){
 
     return node.selectors.join(',')
       + '{'
-      + decls.map(this.visit, this).join(';')
+      + decls.map(this.visit, this).join('')
       + '}';
   }
 
   return node.selectors.map(function(s){ return indent + s }).join(',\n')
     + ' {\n'
     + this.indent(1)
-    + decls.map(this.visit, this).join(';\n')
+    + decls.map(this.visit, this).join('\n')
     + this.indent(-1)
     + '\n' + this.indent() + '}';
 };
@@ -204,10 +206,10 @@ Compiler.prototype.rule = function(node){
 
 Compiler.prototype.declaration = function(node){
   if (this.compress) {
-    return node.property + ':' + node.value;
+    return node.property + ':' + node.value + ';';
   }
 
-  return this.indent() + node.property + ': ' + node.value;
+  return this.indent() + node.property + ': ' + node.value + ';';
 };
 
 /**
