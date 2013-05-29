@@ -10,16 +10,18 @@ var Identity = require('./lib/identity');
  * Stringfy the given AST `node`.
  *
  * @param {Object} node
- * @param {Object} options
+ * @param {Object} [options]
  * @return {String}
  * @api public
  */
 
 module.exports = function(node, options){
-  if (options.compress) {
-    return new Compressed(options).compile(node);
-  }
+  options = options || {};
 
-  return new Identity(options).compile(node);
+  var compiler = options.compress
+    ? new Compressed(options)
+    : new Identity(options);
+
+  return compiler.compile(node);
 };
 
