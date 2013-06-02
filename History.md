@@ -1,4 +1,10 @@
 
+1.3.1 / 2013-06-02 
+==================
+
+ * fix output of rules with no declarations for Identity compiler
+ * fix defaulting of options
+
 1.3.0 / 2013-05-28 
 ==================
 
