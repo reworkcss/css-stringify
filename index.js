@@ -22,6 +22,10 @@ module.exports = function(node, options){
     ? new Compressed(options)
     : new Identity(options);
 
-  return compiler.compile(node);
+  var code = compiler.compile(node);
+  if (options.sourceMap)
+    return {code: code, map: compiler.map}
+  else
+    return code;
 };
 
