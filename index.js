@@ -24,7 +24,7 @@ module.exports = function(node, options){
 
   var code = compiler.compile(node);
   if (options.sourceMap)
-    return {code: code, map: compiler.map}
+    return {code: code, map: compiler.map.toJSON()}
   else
     return code;
 };
