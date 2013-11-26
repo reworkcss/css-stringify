@@ -31,6 +31,7 @@ module.exports = function(node, options){
     return { code: code, map: compiler.map.toJSON() };
   }
 
+  var code = compiler.compile(node);
   return code;
 };
 
