@@ -23,7 +23,7 @@ module.exports = function(node, options){
     : new Identity(options);
 
   // source maps
-  if (options.sourceMap) {
+  if (options.sourcemap) {
     var sourcemaps = require('./lib/source-map-support');
     sourcemaps(compiler);
 
