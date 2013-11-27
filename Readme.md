@@ -13,11 +13,11 @@
 
     var str = stringify(ast);
 
-To get compressed output:
+To get compressed output pass `compress` option:
 
     var compressed = stringify(ast, {compress: true});
 
-To get a source map:
+To get a source map pass `sourcemap` option:
 
     var ast = parse('body { font-size: 12px; }', {position: true});
     var result = stringify(ast, {sourcemap: true});
@@ -25,8 +25,8 @@ To get a source map:
     result.code // string with CSS
     result.map // source map
 
-Note that the AST should contain position information (`position` option set to
-`true`).
+Note that the AST should contain position information (`position` option of
+`css-parse` set to `true`).
 
 ## Performance
 
