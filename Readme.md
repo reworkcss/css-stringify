@@ -2,6 +2,28 @@
 
   CSS compiler using the AST provided by [css-parse](https://github.com/visionmedia/css-parse).
 
+## Usage
+
+`css-stringify` exports a single function which dumps CSS AST:
+
+    var stringify = require('css-stringify');
+    var parse = require('css-parse');
+
+    var ast = parse('body { font-size: 12px; }');
+
+    var str = stringify(ast);
+
+To get compressed output:
+
+    var compressed = stringify(ast, {compress: true});
+
+To get a source map:
+
+    var result = stringify(ast, {sourcemap: true});
+
+    result.code // string with CSS
+    result.map // source map
+
 ## Performance
 
   Formats 15,000 lines of CSS (2mb) in 23ms on my macbook air.
