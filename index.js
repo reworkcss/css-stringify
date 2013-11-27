@@ -9,16 +9,13 @@ var Identity = require('./lib/identity');
 /**
  * Stringfy the given AST `node`.
  *
+ * Options:
+ *
+ *  - `compress` space-optimized output
+ *  - `sourcemap` return an object with `.code` and `.map`
+ *
  * @param {Object} node
  * @param {Object} [options]
- * @param {Boolean} [options.sourcemap]  generate source map,
- *                  if set to true this will change return value to
- *                  `{code: '...', map: {...}}`, `node` argument should contain
- *                  position information (e.g.  parsed by css-parse with
- *                  `position` option set to `true`)
- * @param {Boolean} [options.compress] compress output (ignores indent option)
- * @param {String} [options.indent] a string used for indents (defaults to 2 spaces)
- *
  * @return {String}
  * @api public
  */

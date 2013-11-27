@@ -2,31 +2,36 @@
 
   CSS compiler using the AST provided by [css-parse](https://github.com/visionmedia/css-parse).
 
-## Usage
+## API
 
-`css-stringify` exports a single function which dumps CSS AST:
+### stringify(object, [options])
 
-    var stringify = require('css-stringify');
-    var parse = require('css-parse');
+  Accepts an AST `object` from css-parse and returns a CSS string.
 
-    var ast = parse('body { font-size: 12px; }');
+```js
+var stringify = require('css-stringify');
+var parse = require('css-parse');
 
-    var str = stringify(ast);
+var ast = parse('body { font-size: 12px; }');
+var css = stringify(ast);
+```
 
-To get compressed output pass `compress` option:
+  Optionally you may `compress` the output:
 
-    var compressed = stringify(ast, {compress: true});
+```js
+var css = stringify(ast, { compress: true });
+```
 
-To get a source map pass `sourcemap` option:
+  Or return a `sourcemap` along with the CSS output,
+  which requires the use of the css-parse `position` option.
 
-    var ast = parse('body { font-size: 12px; }', {position: true});
-    var result = stringify(ast, {sourcemap: true});
+```js
+var ast = parse('body { font-size: 12px; }', { position: true });
+var result = stringify(ast, { sourcemap: true });
 
-    result.code // string with CSS
-    result.map // source map
-
-Note that the AST should contain position information (`position` option of
-`css-parse` set to `true`).
+result.code // string with CSS
+result.map // source map
+```
 
 ## Performance
 
