@@ -1,7 +1,7 @@
 1.4.0 / 2013-XX-XX
 ==================
 
- * source map generation
+ * add source map generation
 
 1.3.2 / 2013-10-18 
 ==================
