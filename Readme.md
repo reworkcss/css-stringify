@@ -19,10 +19,14 @@ To get compressed output:
 
 To get a source map:
 
+    var ast = parse('body { font-size: 12px; }', {position: true});
     var result = stringify(ast, {sourcemap: true});
 
     result.code // string with CSS
     result.map // source map
+
+Note that the AST should contain position information (`position` option set to
+`true`).
 
 ## Performance
 
