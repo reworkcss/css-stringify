@@ -22,6 +22,16 @@ module.exports = function(node, options){
     ? new Compressed(options)
     : new Identity(options);
 
-  return compiler.compile(node);
+  // source maps
+  if (options.sourcemap) {
+    var sourcemaps = require('./lib/source-map-support');
+    sourcemaps(compiler);
+
+    var code = compiler.compile(node);
+    return { code: code, map: compiler.map.toJSON() };
+  }
+
+  var code = compiler.compile(node);
+  return code;
 };
 
