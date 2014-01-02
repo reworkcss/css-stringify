@@ -1,6 +1,6 @@
 {
   "name": "css-stringify",
-  "repo": "visionmedia/css-stringify",
+  "repo": "reworkcss/css-stringify",
   "version": "1.4.1",
   "description": "CSS compiler",
   "keywords": ["css", "stringify", "stylesheet"],
