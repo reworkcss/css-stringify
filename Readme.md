@@ -1,4 +1,4 @@
-# css-stringify [![Build Status](https://travis-ci.org/visionmedia/css-stringify.png)](https://travis-ci.org/visionmedia/css-stringify)
+# css-stringify [![Build Status](https://travis-ci.org/reworkcss/css-stringify.png)](https://travis-ci.org/reworkcss/css-stringify)
 
   CSS compiler using the AST provided by [css-parse](https://github.com/visionmedia/css-parse).
 

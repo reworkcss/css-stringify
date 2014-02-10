@@ -16,7 +16,7 @@
   "main": "index",
   "repository": {
     "type": "git",
-    "url": "https://github.com/visionmedia/css-stringify.git"
+    "url": "https://github.com/reworkcss/css-stringify.git"
   },
   "scripts": {
     "test": "make test"
