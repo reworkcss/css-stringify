@@ -11,7 +11,7 @@
   "devDependencies": {
     "mocha": "*",
     "should": "*",
-    "css-parse": "1.6.0"
+    "css-parse": "git://github.com/reworkcss/css-parse.git#7cef3658d0bba872cde05a85339034b187cb3397"
   },
   "main": "index",
   "repository": {
