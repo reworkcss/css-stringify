@@ -54,6 +54,7 @@ describe('stringify(obj, {sourcemap: true})', function(){
     map.originalPositionFor({ line: 11, column: 0 }).should.eql(locs.mediaBlock);
     map.originalPositionFor({ line: 12, column: 2 }).should.eql(locs.mediaOnly);
     map.originalPositionFor({ line: 17, column: 0 }).should.eql(locs.comment);
+    map.sourceContentFor('rules.css').should.eql(src);
   });
 
   it('should generate source maps alongside when using compress compiler', function(){
@@ -66,5 +67,6 @@ describe('stringify(obj, {sourcemap: true})', function(){
     map.originalPositionFor({ line: 1, column: 10 }).should.eql(locs.tobiNameValue);
     map.originalPositionFor({ line: 1, column: 50 }).should.eql(locs.mediaBlock);
     map.originalPositionFor({ line: 1, column: 64 }).should.eql(locs.mediaOnly);
+    map.sourceContentFor('rules.css').should.eql(src);
   });
 });
