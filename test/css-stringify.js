@@ -81,14 +81,14 @@ describe('stringify(obj, {sourcemap: true})', function(){
       column: 0,
       line: 1,
       name: null,
-      source: 'source-map-apply.scss'
+      source: 'test/source-map-apply.scss'
     });
 
     map.originalPositionFor({ line: 2, column: 2 }).should.eql({
       column: 7,
       line: 1,
       name: null,
-      source: 'source-map-apply.scss'
+      source: 'test/source-map-apply.scss'
     });
   });
 });
