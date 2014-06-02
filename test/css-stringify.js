@@ -68,7 +68,7 @@ describe('stringify(obj, {sourcemap: true})', function(){
     map.originalPositionFor({ line: 1, column: 64 }).should.eql(locs.mediaOnly);
   });
 
-  it('should apply included source maps', function(){
+  it('should apply included source maps, with source paths relative to CWD', function(){
     var file = 'test/source-map-apply.css';
     var src = read(file, 'utf8');
     var stylesheet = parse(src, { source: file, position: true });
@@ -81,14 +81,14 @@ describe('stringify(obj, {sourcemap: true})', function(){
       column: 0,
       line: 1,
       name: null,
-      source: 'source-map-apply.scss'
+      source: 'test/source-map-apply.scss'
     });
 
     map.originalPositionFor({ line: 2, column: 2 }).should.eql({
       column: 7,
       line: 1,
       name: null,
-      source: 'source-map-apply.scss'
+      source: 'test/source-map-apply.scss'
     });
   });
 });
