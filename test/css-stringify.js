@@ -28,10 +28,11 @@ describe('stringify(obj)', function(){
 });
 
 describe('stringify(obj, {sourcemap: true})', function(){
-  var src = read('test/source-map-case.css', 'utf8');
-  var stylesheet = parse(src, { source: 'rules.css', position: true });
+  var file = 'test/source-map-case.css';
+  var src = read(file, 'utf8');
+  var stylesheet = parse(src, { source: file, position: true });
   function loc(line, column) {
-    return { line: line, column: column, source: 'rules.css', name: null }
+    return { line: line, column: column, source: file, name: null }
   };
 
   var locs = {
@@ -54,6 +55,7 @@ describe('stringify(obj, {sourcemap: true})', function(){
     map.originalPositionFor({ line: 11, column: 0 }).should.eql(locs.mediaBlock);
     map.originalPositionFor({ line: 12, column: 2 }).should.eql(locs.mediaOnly);
     map.originalPositionFor({ line: 17, column: 0 }).should.eql(locs.comment);
+    map.sourceContentFor(file).should.eql(src);
   });
 
   it('should generate source maps alongside when using compress compiler', function(){
@@ -66,6 +68,7 @@ describe('stringify(obj, {sourcemap: true})', function(){
     map.originalPositionFor({ line: 1, column: 10 }).should.eql(locs.tobiNameValue);
     map.originalPositionFor({ line: 1, column: 50 }).should.eql(locs.mediaBlock);
     map.originalPositionFor({ line: 1, column: 64 }).should.eql(locs.mediaOnly);
+    map.sourceContentFor(file).should.eql(src);
   });
 
   it('should apply included source maps', function(){
