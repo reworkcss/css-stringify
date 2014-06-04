@@ -1,3 +1,7 @@
+HEAD
+==================
+
+ * depend on the 'css' package, which now contains the stringifier
 
 1.4.1 / 2013-12-09
 ==================
